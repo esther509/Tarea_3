@@ -17,9 +17,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    self.redValue = 127.5;
-    self.greenValue = 127.5;
-    self.blueValue = 127.5;
+    self.sliderRedValue.value = self.redValue = 0;
+    self.sliderGreenValue.value = self.greenValue = 0;
+    self.sliderBlueValue.value = self.blueValue = 0;
+    
+    self.nameValue = @"Sin nombre";
+    self.phoneValue = @"Sin telefono";
+    
+    [self changeColor];
    
 }
 
@@ -30,36 +35,133 @@
 }
 
 - (void)changeColor {
-    self.circleImage.tintColor = RGB(self.redValue, self.greenValue, self.blueValue);
-     //self.circleImage.tintColorDidChange();
-}
-
-- (IBAction)onColorSliderRed:(id)sender {
-    self.redValue = self.sliderRedValue.value;
-    
     UIColor *color = RGB(self.redValue, self.greenValue, self.blueValue);
-    
-    //self.changeColor();
     self.circleImage.image = [self.circleImage.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     [self.circleImage setTintColor:color];
     
-    //self.circleImage.tintColor = RGB(self.redValue, self.greenValue, self.blueValue);
+    self.hexValue = [self hexFromInt:self.redValue  hex2:self.greenValue hex3:self.blueValue];
+    
+    self.HexaColorLabel.text = self.hexValue;
+    self.redColorLabel.text = @(self.redValue).stringValue;
+    self.greenColorLabel.text = @(self.greenValue).stringValue;
+    self.blueColorLabel.text = @(self.blueValue).stringValue;
+    
+}
+
+- (NSString *)hexFromInt:(NSInteger)val1 hex2:(NSInteger) val2 hex3:(NSInteger) val3 {
+    return [NSString stringWithFormat:@"#%02X%02X%02X", (int)val1,(int)val2,(int)val3];
+    //NSString *test1 = [NSString stringWithFormat:@"%.15f", d1];
+}
+
+
+- (IBAction)onColorSliderRed:(id)sender {
+    self.redValue = self.sliderRedValue.value;
+    [self changeColor];
 }
 
 - (IBAction)onColorSliderGreen:(id)sender {
     self.greenValue = self.sliderGreenValue.value;
-    
-    //self.colorChanged();
-    self.circleImage.backgroundColor = RGB(self.redValue, self.greenValue, self.blueValue);
+    [self changeColor];
 }
 
 - (IBAction)onColorSliderBlue:(id)sender {
     self.blueValue = self.sliderBlueValue.value;
-    
-    //self.colorChanged();
-    self.circleImage.backgroundColor = RGB(self.redValue, self.greenValue, self.blueValue);
+    [self changeColor];
 }
 
+- (void) changeStateElements:(BOOL)state{
+    [self.circleImage setHidden:state];
+    [self.shadowImage setHidden:state];
+    
+    [self.HexaColorLabel setHidden:state];
+    
+    [self.redColorLabel setHidden:state];
+    [self.greenColorLabel setHidden:state];
+    [self.blueColorLabel setHidden:state];
+    
+    [self.sliderRedValue setHidden:state];
+    [self.sliderGreenValue setHidden:state];
+    [self.sliderBlueValue setHidden:state];
+    
+    [self.rndBtnReference setHidden:state];
+}
+
+- (IBAction)onSwitchCircle:(id)sender {
+    [self changeStateElements:![self.switchValue isOn]];
+}
+
+-(int)getRandomNumberBetween:(int)from to:(int)to {
+    
+    return (int)from + arc4random() % (to-from+1);
+}
+
+- (IBAction)onRandomButton:(id)sender {
+    self.sliderRedValue.value = self.redValue = [self getRandomNumberBetween:0 to:255];
+    self.sliderGreenValue.value = self.greenValue = [self getRandomNumberBetween:0 to:255];
+    self.sliderBlueValue.value = self.blueValue = [self getRandomNumberBetween:0 to:255];
+    
+    [self changeColor];
+}
+//- (IBAction)endeditingName:(id)sender {
+//    [self.view endEditing:YES];
+//}
+//- (IBAction)endEditingPhone:(id)sender {
+//    [self.view endEditing:YES];
+//}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
+    
+    if(![self.nameTextField.text  isEqual: @""])
+        self.nameValue = self.nameTextField.text;
+    else
+        self.nameValue = @"Sin nombre";
+    
+    if(![self.phoneTextField.text  isEqual: @""])
+        self.phoneValue = self.phoneTextField.text;
+    else
+        self.phoneValue = @"Sin telefono";
+    
+    [self.view endEditing:YES];
+    [super touchesBegan:touches withEvent:event];
+}
+
+- (BOOL)textFieldShouldReturn: (UITextView *) textField{
+    if(![self.nameTextField.text  isEqual: @""])
+        self.nameValue = self.nameTextField.text;
+    else
+        self.nameValue = @"Sin nombre";
+    
+    if(![self.phoneTextField.text  isEqual: @""])
+        self.phoneValue = self.phoneTextField.text;
+    else
+        self.phoneValue = @"Sin telefono";
+    
+    [textField resignFirstResponder];
+    return YES;
+}
+
+- (IBAction)mostrarMensaje:(id)sender {
+    
+    NSString *circleValue = self.hexValue;
+    if(![self.switchValue isOn])
+        circleValue = @"No hay circulo";
+    
+    NSString *alertMsg = [NSString stringWithFormat:@"%@\n%@\n%@\n", self.nameValue, self.phoneValue, circleValue];
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"My Alert"
+                                                                   message:alertMsg
+                                                preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {}];
+    
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (IBAction)onAlertButton:(id)sender {
+    //[self mostrarMensaje];
+}
 
 
 @end

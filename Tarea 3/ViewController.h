@@ -11,16 +11,35 @@
 
 @interface ViewController : UIViewController
 
-@property (weak, nonatomic) IBOutlet UIImageView *circleImage;
-@property (weak, nonatomic) IBOutlet UISlider *sliderRedValue;
-@property (weak, nonatomic) IBOutlet UISlider *sliderGreenValue;
-@property (weak, nonatomic) IBOutlet UISlider *sliderBlueValue;
 
-@property float redValue;
-@property float greenValue;
-@property float blueValue;
+@property (weak, nonatomic) IBOutlet UIImageView *circleImage;
+@property (weak, nonatomic) IBOutlet UIImageView *shadowImage;
+@property (weak, nonatomic) IBOutlet UILabel *HexaColorLabel;
+@property (weak, nonatomic) IBOutlet UISlider *sliderRedValue;
+@property (weak, nonatomic) IBOutlet UILabel *redColorLabel;
+@property (weak, nonatomic) IBOutlet UISlider *sliderGreenValue;
+@property (weak, nonatomic) IBOutlet UILabel *greenColorLabel;
+@property (weak, nonatomic) IBOutlet UISlider *sliderBlueValue;
+@property (weak, nonatomic) IBOutlet UILabel *blueColorLabel;
+
+@property int redValue;
+@property int greenValue;
+@property int blueValue;
+@property NSString *hexValue;
+
+@property (weak, nonatomic) IBOutlet UISwitch *switchValue;
+@property (weak, nonatomic) IBOutlet UIButton *rndBtnReference;
+@property (weak, nonatomic) IBOutlet UITextField *nameTextField;
+@property (weak, nonatomic) IBOutlet UITextField *phoneTextField;
+
+@property NSString *nameValue;
+@property NSString *phoneValue;
 
 - (void) changeColor;
+- (NSString *)hexFromInt:(NSInteger)val1 hex2:(NSInteger) val2 hex3:(NSInteger) val3;
+- (void) changeStateElements:(BOOL)state;
+- (int)getRandomNumberBetween:(int)from to:(int)to;
+- (IBAction)mostrarMensaje:(id)sender;
 
 @end
 
